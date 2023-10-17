@@ -16,8 +16,8 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "tb_users")
-public class Users implements Serializable {
+@Table(name = "tb_user")
+public class User implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -29,16 +29,16 @@ public class Users implements Serializable {
 	private String password;
 	
 	@ManyToMany(fetch = FetchType.EAGER)//Carregar os dados automaticamente com o usuario
-	@JoinTable(name = "tb_users_roles", //nome da tabela a ser criada para relacionamento
-	joinColumns = @JoinColumn(name= "users_id"), //coluna identificadora da tabela user
-	inverseJoinColumns = @JoinColumn(name = "roles_id")) //coluna identificadora da tabela roles
-	private Set<Roles> roles = new HashSet<>();
+	@JoinTable(name = "tb_user_roles", //nome da tabela a ser criada para relacionamento
+	joinColumns = @JoinColumn(name= "user_id"), //coluna identificadora da tabela user
+	inverseJoinColumns = @JoinColumn(name = "role_id")) //coluna identificadora da tabela roles
+	private Set<Role> role = new HashSet<>();
 	
-	public Users() {
+	public User() {
 		super();
 	}
 
-	public Users(Long id, String name, String email, String password) {
+	public User(Long id, String name, String email, String password) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -59,7 +59,7 @@ public class Users implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Users other = (Users) obj;
+		User other = (User) obj;
 		return Objects.equals(id, other.id);
 	}
 
@@ -95,8 +95,8 @@ public class Users implements Serializable {
 		this.password = password;
 	}
 
-	public Set<Roles> getRoles() {
-		return roles;
+	public Set<Role> getRoles() {
+		return role;
 	}
 	
 	

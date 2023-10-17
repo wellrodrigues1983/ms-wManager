@@ -11,8 +11,8 @@ import jakarta.persistence.Table;
 
 
 @Entity
-@Table(name = "tb_roles")
-public class Roles implements Serializable{
+@Table(name = "tb_role")
+public class Role implements Serializable{
 		
 	private static final long serialVersionUID = 1L;
 	
@@ -21,11 +21,11 @@ public class Roles implements Serializable{
 	private Long id;
 	private String roleName;
 	
-	public Roles() {
+	public Role() {
 		super();
 	}
 
-	public Roles(Long id, String roleName) {
+	public Role(Long id, String roleName) {
 		super();
 		this.id = id;
 		this.roleName = roleName;
@@ -49,7 +49,7 @@ public class Roles implements Serializable{
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(roleName);
+		return Objects.hash(id);
 	}
 
 	@Override
@@ -60,9 +60,13 @@ public class Roles implements Serializable{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Roles other = (Roles) obj;
-		return Objects.equals(roleName, other.roleName);
+		Role other = (Role) obj;
+		return Objects.equals(id, other.id);
 	}
+
+	
+
+	
 	
 	
 	

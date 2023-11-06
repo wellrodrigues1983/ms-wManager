@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,6 +17,7 @@ import com.wmanager.auth.config.TokenService;
 import com.wmanager.auth.dto.AuthenticationDTO;
 import com.wmanager.auth.dto.LoginResponseDTO;
 import com.wmanager.auth.dto.UserDTO;
+import com.wmanager.auth.exceptions.GlobalExceptionHandler;
 import com.wmanager.auth.model.UserModel;
 import com.wmanager.auth.repository.UserRepository;
 import com.wmanager.auth.util.DateUtil;
@@ -35,13 +37,15 @@ public class UserService {
 	@Autowired
 	private PasswordEncoder encoder;
 
-	public ResponseEntity<LoginResponseDTO> getLogin(AuthenticationDTO data) {
+	public ResponseEntity<LoginResponseDTO> getLogin(AuthenticationDTO data) {		
+		
 		var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
 		Authentication auth = null;
 		try {
 			auth = this.authenticationManager.authenticate(usernamePassword);
 		} catch (AuthenticationException e) {
-			throw new RuntimeException(e);
+			GlobalExceptionHandler.sendMessage(e.getMessage());
+			return ResponseEntity.status(HttpStatus.LOCKED).build();			
 		}
 
 		String token = null;
@@ -51,17 +55,12 @@ public class UserService {
 			throw new RuntimeException(e);
 		}
 		
-		/*
-		 * UserModel user = new UserModel("Admin5", "admin5@admin.com",
-		 * encoder.encode("123"), true, DateUtil.formatarData(new Date()),
-		 * UserRole.ADMIN);
-		 * 
-		 * System.out.println("Data: " + DateUtil.formatarData(new Date()));
-		 * 
-		 * userRepository.save(user);
-		 */
-
-		return ResponseEntity.ok().header("Authorization", "Bearer " + token).build();
+		if(token != null) {
+			return ResponseEntity.ok().header("Authorization", "Bearer " + token).build();
+		}else {
+			return ResponseEntity.badRequest().build();
+		}
+				
 	}
 		
 

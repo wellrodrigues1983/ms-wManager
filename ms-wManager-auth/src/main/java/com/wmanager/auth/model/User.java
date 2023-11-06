@@ -1,23 +1,25 @@
 package com.wmanager.auth.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import com.wmanager.auth.enumerator.UserRole;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tb_user")
-public class User implements Serializable {
+public class User implements Serializable, UserDetails {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -28,11 +30,7 @@ public class User implements Serializable {
 	private String email;
 	private String password;
 	
-	@ManyToMany(fetch = FetchType.EAGER)//Carregar os dados automaticamente com o usuario
-	@JoinTable(name = "tb_user_roles", //nome da tabela a ser criada para relacionamento
-	joinColumns = @JoinColumn(name= "user_id"), //coluna identificadora da tabela user
-	inverseJoinColumns = @JoinColumn(name = "role_id")) //coluna identificadora da tabela roles
-	private Set<Role> role = new HashSet<>();
+	private UserRole role;
 	
 	public User() {
 		super();
@@ -44,6 +42,16 @@ public class User implements Serializable {
 		this.name = name;
 		this.email = email;
 		this.password = password;
+	}
+	
+	
+
+	public User(String name, String email, String password, UserRole role) {
+		super();
+		this.name = name;
+		this.email = email;
+		this.password = password;
+		this.role = role;
 	}
 
 	@Override
@@ -95,9 +103,49 @@ public class User implements Serializable {
 		this.password = password;
 	}
 
-	public Set<Role> getRoles() {
+	public UserRole getRole() {
 		return role;
 	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {		
+		
+		if(this.role == UserRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+        else return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+		
+	}
+
+	@Override
+	public String getUsername() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	
 	
 	
 	

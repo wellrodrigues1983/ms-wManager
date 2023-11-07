@@ -29,7 +29,7 @@ public class SecurityConfiguration {
 		http.cors(AbstractHttpConfigurer::disable).csrf(AbstractHttpConfigurer::disable)
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(
-						auth -> auth.requestMatchers("/users/**").permitAll().requestMatchers("/login/**").permitAll()
+						auth -> auth.requestMatchers("/login/**").permitAll()
 								.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll().anyRequest().authenticated())
 				.headers(header -> header.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
 				.addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);

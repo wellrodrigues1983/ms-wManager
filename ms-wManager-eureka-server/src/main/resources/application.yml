@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: eureka
+
+#Definir o contexto da aplicao
+server:
+  servlet:
+    context-path: /eureka
+  port: 8082
+
+eureka:
+  renewalPercentThreshold: 0.85
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://localhost:${server.port}/eureka
+  
+      
+      
